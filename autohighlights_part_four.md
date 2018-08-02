@@ -30,7 +30,13 @@ Finally, I spent a few days working to speed things up, and managed to shorten a
 
 ## Speedups
 
-I did a full run of the Heidenheim 2018 streams, and it worked really well but took over a day per stream.  This was unacceptable, and in fact I believe it was somewhat slower than previously
+I did a full run of the Heidenheim 2018 streams, and it worked really well but took over a day per stream.  This was unacceptable, and in fact I believe it was somewhat slower than previously.  I needed to find a way to speed it up while maintaining the accuracy.
+
+The first, most obvious thing I did was a little more clean up from the refactor.  Previously, I had handled each frame as an image file itself.  I changed that to handling each frame as an object, but I had just done a drop-in replacement.  Whereas before I had done "take two frames, compare them" now I was doing "take two frames, make them `frame` objects, and compare them."  That meant, of course, that each frame was being processed twice.  So I started making frames for each batch at once, and eventually for the every frame at once.  This more or less shrunk it in half.
+
+The second thing I did was compare the first and last frames of a batch.  If they're the same/both invalid, there weren't any touches scored in between them, so we don't need to check the rest of the frames in between.  Along with this, I shrank the batch size to 100 and eventually to 50.  This was a humongous speedup, skipping nearly half the frames completely.  These two speedups cut the time per run from ~26 hours a stream to ~6.
+
+That second improvement exposed a bug where I wasn't comparing the first frame of a batch with the last frame of the previous batch.  I had a lot of fun in the dctech slack talking about options to fix this - shoutouts to robbkidd and keithrbennett.  I ended up just using `each_cons(2)` and taking the first frame of the secnd batch, but we went through a lot of strange options like `batches.next.peek`, and both a custom `enumerable` *and* a custom `Enumerator`.
 
 ## Future Work
 
