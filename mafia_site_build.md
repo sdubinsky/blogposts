@@ -4,15 +4,17 @@ Every six months or so, my friend runs a live-action version of the card game Ma
 
 ## Basic Game Design
 
-The players are divided into townspeople and Mafia members.  They are also divided into families.  The basic idea is that every night, the Mafia discuss and select a certain number of players to kill.  In turn, each day every player votes for a family, and the family that gets the most number of votes is sent to court.  Each player also votes for a member of their own family.  Whichever family is sent to court, the player from within that family that got the most votes is voted out of the game.
+The players are divided into townspeople and Mafia members.  They are also divided into families - so for example, family X has six members, one of which is also in the Mafia.  The basic idea is that every night, the Mafia discuss and select a certain number of players to kill.  In turn, each day every player votes for a family, and the family that gets the most number of votes is sent to court.  Each player also votes for a member of their own family.  Whichever family is sent to court, the player from within that family that got the most votes is voted out of the game.
 
-To make things more complicated, players are also assigned any of a number of roles.  These roles let them affect every aspect of the game.  Most of my time was spent making sure these roles interacted properly.  They had a priority list and could affect each other.
+To make things more complicated and interesting, players are also assigned any of a number of roles.  These roles let them affect every aspect of the game.  Most of my time was spent making sure these roles interacted properly.  They had a priority list and could affect each other.
 
 Each player was given an ID number, and had to enter that ID number to perform any action.
 
+There was some basic test coverage, but not comprehensive and not end-to-end.  It was still incredibly useful.
+
 ## Basic Website Design
 
-Not that complicated.  A page for the rules, a page to sign up, a roster page, a page for day actions like voting, a page for night actions, and an admin page that had live updates on what people were doing.  There was a separate file that counted the votes and ordered them by family, and another separate file that ran the nightly actions.
+Not that complicated.  A page for the rules, a page to sign up, a roster page, a page for day actions like voting, a page for night actions, and an admin page that had live updates on what people were doing.  There was a separate file that counted the votes and ordered them by family, and another separate file that ran the nightly actions.  Both of those latter programs were run via rake tasks at the command line.
 
 ## Role Processing
 
@@ -21,6 +23,7 @@ Role actions were saved with the ID number of the player who used them, the time
 I began by giving each player a status for each night.  This held the full player status - basically a record of the player's state at that night.
 
 Then I took each role in priority order.  I sorted them by timestamp once newest-oldest to remove duplicate submissions, then reversed the list to process them.  For each action, I:
+
 * find the list of targets
 * Check if the player is actually assigned that role
 * Check if the player's status allows him to use that role
@@ -30,7 +33,7 @@ Then I took each role in priority order.  I sorted them by timestamp once newest
   * Update the status for the target.  If it was a status that took effect until it was activated, that night and every future night's status was changed to reflect that.  If it was an effect that was activated, that night and every future night's status was reverted to default.
   * return a string describing what happened.
 
-If I had to do it again, I'd find a better solution.  Many of the effects didn't match up well to a "one-a-night" status.  There were also edge cases like "this role can be used an infinite number of times, but only once on yourself" and "this role can be used twice" that were difficult to cover.  I also didn't have the resolution needed to separate day and night effects.
+If I had to do it again, I'd find a better solution than dumping everything into a single `player_status` table.  Many of the effects didn't match up well to a "one-a-night" status.  There were also edge cases like "this role can be used an infinite number of times, but only once on yourself" and "this role can be used twice" that were difficult to cover.  I also didn't have the resolution needed to separate day and night effects.  It also wasn't idempotent - I could only run each night's actions once.  Maybe a role-player table with extra info about how the role has been used, and move some of the more awkward `player_status` stuff into there.
 
 ## Mistakes
 
