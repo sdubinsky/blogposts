@@ -38,6 +38,8 @@ The second thing I did was compare the first and last frames of a batch.  If the
 
 That second improvement exposed a bug where I wasn't comparing the first frame of a batch with the last frame of the previous batch.  I had a lot of fun in the dctech slack talking about options to fix this - shoutouts to robbkidd and keithrbennett.  I ended up just using `each_cons(2)` and taking the first frame of the secnd batch, but we went through a lot of strange options like `batches.next.peek`, and both a custom `enumerable` *and* a custom `Enumerator`.
 
+A redditor named atemu12 on /r/ffmpeg pointed out that I could save a lot more time by copying the clips out from the stream file instead of reencoding them, which saves a ton of time on that end as well.
+
 ## Future Work
 
 First, I need to set up a real test environment.  I won't be able to add it to git because of the media files required, but it's absolutely crucial.  I'm going to test that it detects invalid frames, valid frames, detects touches with pairs of frames, and so on.  Refactoring the code was absolutely crucial for this.
