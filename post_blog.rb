@@ -3,6 +3,7 @@ require 'time'
 
 #Usage:
 #DATABASE_URL=$(heroku config:get DATABASE_URL -a sdubinsky) ruby post_blog.rb $FILENAME [$tag1 $tag2...]
+#DATABASE_URL=postgres://localhost:4567/sdubinskysite ruby post_blog.rb $FILENAME [$tag1 $tag2...]
 $db_url = ENV['DATABASE_URL']
 connection = PG.connect($db_url)
 
