@@ -4,13 +4,11 @@ This is part one of a series on the basics of computer science theory, from a pr
 
 ## What is Computer Science? Information and Abstraction
 
-At its core, computer science is about the transformation and organization of information.  To do this, you have to decide what information is important and what isn't.  Selecting the important pieces of information and discarding the stuff you don't care about is called abstraction[^1], and it's a fundamental skill in computer science.  You can either cut the unimportant info away entirely or mash multiple pieces of information together and treat them collectively as one unit.
-
-The thing about deciding what's important and what isn't is that if you change your perspective, the information you want to abstract away changes.  For example, there's a massive amount of information about each and every subway train.  You as a passenger can ignore almost all of it except where and when the train is going, and abstract it into "a red line train leaving Metro Center at 12:30."  On the other hand, if you're a mechanic, you need a lot more of that information, but not where it's supposed to be going at that particular time.  We'll be using abstraction to cut things down into their simplest possible version.  This is to make them easier to reason about in general terms.
+At its core, computer science is about the transformation and organization of information.  To do this, you have to decide what information is important and what isn't.  Selecting the important pieces of information and discarding the stuff you don't care about is called abstraction[^1], and it's a fundamental skill in computer science.  You can either cut the unimportant info away entirely or mash multiple pieces of information together and treat them collectively as one unit.  We'll be using abstraction to cut away as much information as possible.  This lets us make new discoveries that apply to as many different things as possible.
 
 The fundamental SI unit of length is the meter.  The fundamental unit of time is the second.  The fundamental unit of information is the bit.  A bit can hold one of two possible values.  Conceptually, this is the answer to the simplest possible type of question, a yes or no question(or true/false).  If you need more information, you can add more bits, which is the same as getting answers to more yes-or-no questions.  Very quickly, you'll get enough answers to uniquely identify whatever you're interested in.  You may recognize this as the same basic principle as in 20 Questions.  The only difference is that in computer science we use 1/0 instead of yes/no.
 
-If you have the answers to a lot of questions, and you line them all up together, it'll look something like: `110101`.  In technical terms, a series of bits like this where each position in the series represents the answer to a question is called a bitmap.  It's commonly used to represent settings, because it's easy to check whether something is set or not[^2].  Sockets in C, for example, use a bitmap to determine what kind of socket to create.
+If you have the answers to a lot of questions, and you line them all up together, it'll look something like: `110101`.  In technical terms, a series of bits like this where each position in the series represents the answer to a question is called a bitmap.  It's commonly used to represent settings in low-level code, because it's easy to check whether something is set or not[^2].
 
 ## State and State Machines
 
@@ -25,7 +23,9 @@ Having state is all well and good, but the one constant in the universe is "thin
 Transition arrows are marked with symbols.  The machine(metaphorically) reads a symbol, looks at its current state, finds the transition arrow with the matching symbol, and moves to the state it points to.  For simplification purposes, we assume FSMs read symbols off a tape and automatically activate whatever transition they're supposed to.  There are two kinds of FSMs:
 
 * Deterministic FSM: Deterministic FSMs are allowed one transition per symbol, and only allow transitions when they read a symbol.  In other words, if you know what your current state is and you know what the next symbol is, you always know where you're going to end up.
+[[image of DSM]
 * Nondeterministic FSM: Nondeterministic FSMs are much more general.  Multiple transition arrows from the same state can have the same symbol, or transition on no symbol at all(generally represented as ε).
+[[image of nsm]]
 
 ### Practical Uses: Regular Expressions
 
@@ -56,9 +56,9 @@ Turing machines are theoretical constructs meant to provide a simple object used
 
 ## Conclusion
 
-We've covered some of the basic tools and ideas in computer science, moving from individual bits all the way up to Turing machines.  We also talked about abstraction as the fundamental tool of computer science, and about working with symbols without worrying abou what that symbol represents.
+We've covered some of the basic tools and ideas in computer science, moving from individual bits all the way up to Turing machines.  We also talked about abstraction as the fundamental tool of computer science, and about working with symbols without worrying about what that symbol represents.  Up next, we'll cover graphs and graph-based data structures.
 
 ## Footnotes
 
 [^1]: All abstractions are leaky.  This means that some of the information you've decided isn't important actually ends up being important.  You can't avoid leaky abstractions, so you also need to understand at least one level below whatever abstraction you're working with.  
-[^2]: If you want to know whether the third bit is set `(1 << 3) & bitmap` will be 0 if it's unset and 1 if it's set.
+[^2]: If you want to know whether the third bit is set you can do some very simple bitwise arithmetic to check it.  If you know bitwise arithmetic, `(1 << 3) & bitmap` will be 0 if it's unset and 1 if it's set.  If you don't, don't worry about it.
